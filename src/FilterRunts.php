@@ -10,7 +10,9 @@ class FilterRunts {
 
   const NON_COUNTING_WORD = 'NON_COUNTING_WORD';
 
-  const REGEX_WORD_SEP = '/^(\s|&nbsp;)+/';
+  const REGEX_WORD_SEP = '/^( |\t|&nbsp;)+/';
+
+  const REGEX_PARAGRAPH_ENDING = '/^(<\/p>|\n\n)/';
 
   /**
    * @var ARRAY
@@ -30,6 +32,41 @@ class FilterRunts {
   }
 
   public function __invoke(string $text): string {
+    $paragraphs = $this->splitIntoParagraphs($text);
+    foreach ($paragraphs as &$paragraph) {
+      $paragraph = $this->processSingleParagraph($paragraph);
+    }
+
+    return implode('', $paragraphs);
+  }
+
+  private function splitIntoParagraphs(string $text): array {
+    $paragraphs = [];
+    $pos = 0;
+    while ($pos < strlen($text)) {
+      if (preg_match(self::REGEX_PARAGRAPH_ENDING, substr($text, $pos), $matches)) {
+        $paragraph_start = $paragraph_start ?? 0;
+        $paragraph_ending = $matches[0];
+        $paragraph_length = $pos - $paragraph_start + strlen($paragraph_ending);
+        $paragraphs[] = substr($text, $paragraph_start, $paragraph_length);
+
+        $pos += strlen($paragraph_ending);
+        $paragraph_start = $pos;
+      }
+      else {
+        $pos++;
+      }
+    }
+
+    $final_paragraph = substr($text, $paragraph_start ?? 0);
+    if ($final_paragraph) {
+      $paragraphs[] = $final_paragraph;
+    }
+
+    return $paragraphs;
+  }
+
+  private function processSingleParagraph(string $text): string {
     $tokens = $this->tokenize($text);
     $tokens = $this->removeTrailingSeparators($tokens);
     $remaining_replacement_count = ($this->config['min_words_per_line'] ?? 0);

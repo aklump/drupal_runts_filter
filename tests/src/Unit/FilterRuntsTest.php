@@ -21,12 +21,26 @@ final class FilterRuntsTest extends TestCase {
     $tests[] = [
       [
         'setMinWordsPerLine' => 3,
+      ],
+      "Lorem ipsum dolar sit amet\n\nMy country \'tis of thee",
+      "Lorem ipsum dolar&nbsp;sit&nbsp;amet\n\nMy country \'tis&nbsp;of&nbsp;thee",
+    ];
+
+    $tests[] = [
+      [
+        'setMinWordsPerLine' => 3,
+      ],
+      '<p>Lorem ipsum dolar sit amet</p><p>My country \'tis of thee</p>',
+      '<p>Lorem ipsum dolar&nbsp;sit&nbsp;amet</p><p>My country \'tis&nbsp;of&nbsp;thee</p>',
+    ];
+    $tests[] = [
+      [
+        'setMinWordsPerLine' => 3,
         'setNonCountingWords' => ['an', 'of'],
       ],
       'A series of essays that weave an ethic of education with an exploration of story',
       'A series of essays that weave an ethic of education with&nbsp;an&nbsp;exploration&nbsp;of&nbsp;story',
     ];
-
     $tests[] = [
       [
         'setMinWordsPerLine' => 3,
