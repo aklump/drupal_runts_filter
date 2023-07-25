@@ -1,0 +1,23 @@
+{
+    "name": "drupal/runts_filter",
+    "description": "Provides custom Drupal integration for Runts Filter.",
+    "type": "drupal-custom-module",
+    "license": "GPL-2.0+",
+    "homepage": "https://drupal.org/project/runts_filter",
+    "authors": [
+        {
+            "name": "Aaron Klump (aklump)",
+            "homepage": "https://www.drupal.org/u/aklump",
+            "role": "Maintainer"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\runts_filter\\": "src",
+            "Drupal\\Tests\\runts_filter\\Unit\\": "tests/src/Unit"
+        }
+    }
+}
