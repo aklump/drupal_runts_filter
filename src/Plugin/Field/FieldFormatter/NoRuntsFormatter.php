@@ -5,6 +5,8 @@ namespace Drupal\runts_filter\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\runts_filter\FilterSettingsInterface;
+use Drupal\runts_filter\FilterSettingsTrait;
 
 /**
  * Plugin implementation of the runts_filter_no_runts formatter.
@@ -22,14 +24,18 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class NoRuntsFormatter extends FormatterBase {
+class NoRuntsFormatter extends FormatterBase implements FilterSettingsInterface {
+
+  use FilterSettingsTrait;
 
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    // TODO Populate from formatter settings.
-    $filter_config = [];
+    $filter_config = [
+      'min_words_per_line' => $this->getSetting('min_words_per_line'),
+      'non_counting_words' => $this->getNonCountingWords(),
+    ];
 
     $elements = [];
     foreach ($items as $delta => $item) {
@@ -53,18 +59,9 @@ class NoRuntsFormatter extends FormatterBase {
    */
   public static function defaultSettings() {
     return [
-      'foo' => 'bar',
+      'min_words_per_line' => FilterSettingsInterface::MIN_WORDS_PER_LINE,
+      'non_counting_words' => FilterSettingsInterface::NON_COUNTING_WORDS,
     ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $form = parent::settingsForm($form, $form_state);
-    $default = $this->getSetting('foo');
-
-    return $form;
   }
 
   /**
@@ -72,11 +69,24 @@ class NoRuntsFormatter extends FormatterBase {
    */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
-    $summary[] = $this->t('<strong>Foo:</strong> @value', [
-      '@value' => $this->getSetting('foo'),
+    $summary[] = $this->t('<strong>Min words:</strong> @value', [
+      '@value' => $this->getMinWordsPerLine(),
+    ]);
+    $summary[] = $this->t('<strong>Non words:</strong> @value', [
+      '@value' => implode(' ', $this->getNonCountingWords()),
     ]);
 
     return $summary;
+  }
+
+  public function getNonCountingWords(): array {
+    $value = $this->getSetting('non_counting_words') ?? FilterSettingsInterface::NON_COUNTING_WORDS;
+
+    return $this->splitNonCountingWords($value);
+  }
+
+  public function getMinWordsPerLine(): int {
+    return (int) ($this->getSetting('min_words_per_line') ?? FilterSettingsInterface::MIN_WORDS_PER_LINE);
   }
 
 }
