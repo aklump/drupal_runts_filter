@@ -20,6 +20,23 @@ final class FilterRuntsTest extends TestCase {
     $tests = [];
     $tests[] = [
       [
+        'setMinWordsPerLine' => 2,
+        'setMinWordsRequiredToFilter' => 4,
+      ],
+      "Lorem ipsum dolar",
+      "Lorem ipsum dolar",
+    ];
+    $tests[] = [
+      [
+        'setMinWordsPerLine' => 2,
+        'setMinWordsRequiredToFilter' => 4,
+      ],
+      "Lorem ipsum dolar sit",
+      "Lorem ipsum dolar&nbsp;sit",
+    ];
+
+    $tests[] = [
+      [
         'setMinWordsPerLine' => 3,
       ],
       "Lorem ipsum dolar sit amet\n\nMy country \'tis of thee",
@@ -97,12 +114,17 @@ final class FilterRuntsTest extends TestCase {
     $this->assertSame($expected, $filter($text));
   }
 
-  public function _testSetMinWordsPerLineReturnsSelf() {
+  public function testSetMinWordsRequiredToFilterReturnsSelf() {
+    $filter = new FilterRunts();
+    $this->assertSame($filter, $filter->setMinWordsRequiredToFilter(3));
+  }
+
+  public function testSetMinWordsPerLineReturnsSelf() {
     $filter = new FilterRunts();
     $this->assertSame($filter, $filter->setMinWordsPerLine(5));
   }
 
-  public function _testSetNonCountingWordsReturnsSelf() {
+  public function testSetNonCountingWordsReturnsSelf() {
     $filter = new FilterRunts();
     $this->assertSame($filter, $filter->setNonCountingWords([
       'of',

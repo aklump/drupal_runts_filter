@@ -1,21 +1,11 @@
-# Here is the schema: https://www.drupal.org/docs/creating-custom-modules/let-drupal-know-about-your-module-with-an-infoyml-file
-
 name: 'Runts Filter'
 description: 'A filter to prevent runts in your copy.'
-package: 'Filters'
+package: Filters
 type: module
-core_version_requirement: ^8 || ^9
-version: VERSION
-
-# The minimum PHP version required by this module.
+core_version_requirement: '^8 || ^9'
+version: 0.0.1
 php: 7.3
-
 dependencies:
-  - drupal:filter
-#  - link:link
-#  - drupal:views
-#
-#test_dependencies:
-# - drupal:image
-
-# read more at https://www.drupal.org/node/2000204
+  - 'drupal:filter'
+homepage: 'https://github.com/aklump/drupal_runts_filter'
+author: aklump

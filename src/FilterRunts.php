@@ -25,6 +25,21 @@ class FilterRunts {
     return $this;
   }
 
+  /**
+   * Set min words needed to modify a paragraph.
+   *
+   * @param int $count
+   *   The number of (counting) words that must appear in a single paragraph
+   *   before the filter will run.
+   *
+   * @return $this
+   */
+  public function setMinWordsRequiredToFilter(int $count): self {
+    $this->config['min_words_required_to_filter'] = $count;
+
+    return $this;
+  }
+
   public function setMinWordsPerLine(int $count): self {
     $this->config['min_words_per_line'] = $count;
 
@@ -69,6 +84,12 @@ class FilterRunts {
   private function processSingleParagraph(string $text): string {
     $tokens = $this->tokenize($text);
     $tokens = $this->removeTrailingSeparators($tokens);
+    $word_count = count(array_filter($tokens, function (array $token) {
+      return self::WORD === $token['type'];
+    }));
+    if ($word_count < ($this->config['min_words_required_to_filter'] ?? 2)) {
+      return $text;
+    }
     $remaining_replacement_count = ($this->config['min_words_per_line'] ?? 0);
     $index = count($tokens) - 1;
 
