@@ -3,7 +3,7 @@ description: 'A filter to prevent runts in your copy.'
 package: Filters
 type: module
 core_version_requirement: '^8 || ^9'
-version: 0.0.1
+version: 0.0.2
 php: 7.3
 dependencies:
   - 'drupal:filter'
