@@ -41,8 +41,9 @@ You may use this in code by doing something like the following:
 ```php
 $text = 'Doorways to Our Childhood Selves';
 $text = (new \Drupal\runts_filter\FilterRunts())
-  ->setMinWordsPerLine(2)
-  ->setNonCountingWords(['a', 'an'])($text);
+  ->setMinWordsPerParagraphPrerequisite(5)
+  ->setMinWordsLastLine(2)
+  ->setIgnoredWords(['a', 'an'])($text);
 $text === 'Doorways to Our Childhood&amp;nbsp;Selves'
 ```
 

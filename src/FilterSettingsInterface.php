@@ -4,11 +4,16 @@ namespace Drupal\runts_filter;
 
 interface FilterSettingsInterface {
 
-  const NON_COUNTING_WORDS = 'a an the of in on';
+  const IGNORED_WORDS = 'a an and at by for of the to';
 
-  const MIN_WORDS_PER_LINE = 3;
+  const MIN_WORDS_PER_PARAGRAPH_PREREQUISITE = 8;
 
-  public function getNonCountingWords(): array;
+  const MIN_WORDS_LAST_LINE = 2;
 
-  public function getMinWordsPerLine(): int;
+  public function getIgnoredWords(): array;
+
+  public function getMinWordsPerParagraphPrerequisite(): int;
+
+  public function getMinWordsLastLine(): int;
+
 }

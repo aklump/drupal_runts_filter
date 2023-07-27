@@ -38,22 +38,27 @@ class RuntsFilter extends FilterBase implements FilterSettingsInterface {
     if ($text) {
       $processor = new FilterRunts();
       $processor
-        ->setMinWordsPerLine($this->getMinWordsPerLine())
-        ->setNonCountingWords($this->getNonCountingWords());
+        ->setMinWordsPerParagraphPrerequisite($this->getMinWordsPerParagraphPrerequisite())
+        ->setMinWordsLastLine($this->getMinWordsLastLine())
+        ->setIgnoredWords($this->getIgnoredWords());
       $text = $processor($text);
     }
 
     return new FilterProcessResult($text);
   }
 
-  public function getNonCountingWords(): array {
-    $value = $this->settings['non_counting_words'] ?? FilterSettingsInterface::NON_COUNTING_WORDS;
+  public function getIgnoredWords(): array {
+    $value = $this->settings['ignored_words'] ?? FilterSettingsInterface::IGNORED_WORDS;
 
-    return $this->splitNonCountingWords($value);
+    return $this->splitWordList($value);
   }
 
-  public function getMinWordsPerLine(): int {
-    return (int) ($this->settings['min_words_per_line'] ?? FilterSettingsInterface::MIN_WORDS_PER_LINE);
+  public function getMinWordsLastLine(): int {
+    return (int) ($this->settings['min_words_last_line'] ?? FilterSettingsInterface::MIN_WORDS_LAST_LINE);
+  }
+
+  public function getMinWordsPerParagraphPrerequisite(): int {
+    return (int) ($this->settings['min_words_per_paragraph_prerequisite'] ?? FilterSettingsInterface::MIN_WORDS_PER_PARAGRAPH_PREREQUISITE);
   }
 
 }

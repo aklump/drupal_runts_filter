@@ -19,14 +19,14 @@ class FilterRunts {
    */
   private $config;
 
-  public function setNonCountingWords(array $words): self {
-    $this->config['non_counting_words'] = array_map('strtolower', $words);
+  public function setIgnoredWords(array $words): self {
+    $this->config['ignored_words'] = array_map('strtolower', $words);
 
     return $this;
   }
 
   /**
-   * Set min words needed to modify a paragraph.
+   * Set min words needed to apply filter to paragraph.
    *
    * @param int $count
    *   The number of (counting) words that must appear in a single paragraph
@@ -34,14 +34,14 @@ class FilterRunts {
    *
    * @return $this
    */
-  public function setMinWordsRequiredToFilter(int $count): self {
-    $this->config['min_words_required_to_filter'] = $count;
+  public function setMinWordsPerParagraphPrerequisite(int $count): self {
+    $this->config['min_words_per_paragraph_prerequisite'] = $count;
 
     return $this;
   }
 
-  public function setMinWordsPerLine(int $count): self {
-    $this->config['min_words_per_line'] = $count;
+  public function setMinWordsLastLine(int $count): self {
+    $this->config['min_words_last_line'] = $count;
 
     return $this;
   }
@@ -87,10 +87,10 @@ class FilterRunts {
     $word_count = count(array_filter($tokens, function (array $token) {
       return self::WORD === $token['type'];
     }));
-    if ($word_count < ($this->config['min_words_required_to_filter'] ?? 2)) {
+    if ($word_count < ($this->config['min_words_per_paragraph_prerequisite'] ?? 2)) {
       return $text;
     }
-    $remaining_replacement_count = ($this->config['min_words_per_line'] ?? 0);
+    $remaining_replacement_count = ($this->config['min_words_last_line'] ?? 0);
     $index = count($tokens) - 1;
 
     // Starting at the end count backwards and replace separators with NBSP.
@@ -195,11 +195,11 @@ class FilterRunts {
   }
 
   private function isNonCountingWord(string $word): bool {
-    if (empty($this->config['non_counting_words'])) {
+    if (empty($this->config['ignored_words'])) {
       return FALSE;
     }
 
-    return in_array(strtolower($word), $this->config['non_counting_words']);
+    return in_array(strtolower($word), $this->config['ignored_words']);
   }
 
 }

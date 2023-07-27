@@ -11,18 +11,25 @@ trait FilterSettingsTrait {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $form['min_words_per_line'] = array(
+    $form['min_words_per_paragraph_prerequisite'] = array(
       '#type' => 'number',
-      '#title' => $this->t('Per line minimum'),
-      '#default_value' => $this->getMinWordsPerLine(),
-      '#description' => $this->t('The minimum words to keep on the last line of a paragraph.'),
+      '#title' => $this->t('Minimum words required'),
+      '#default_value' => $this->getMinWordsPerParagraphPrerequisite(),
+      '#description' => $this->t('If a paragraph has less, the filter will not be applied to that paragraph.'),
     );
 
-    $form['non_counting_words'] = array(
+    $form['min_words_last_line'] = array(
+      '#type' => 'number',
+      '#title' => $this->t('Last line minimum'),
+      '#default_value' => $this->getMinWordsLastLine(),
+      '#description' => $this->t('The minimum words that should appear on the last line of a paragraph to eliminate the runt.'),
+    );
+
+    $form['ignored_words'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Non-counting words'),
-      '#default_value' => implode(' ', $this->getNonCountingWords()),
-      '#description' => $this->t('Space-separated words that should not count toward the line mininum'),
+      '#title' => $this->t('Ignored words'),
+      '#default_value' => implode(' ', $this->getIgnoredWords()),
+      '#description' => $this->t('Space-separated list of words that should not count, e.g. "a", "an", "the", etc.'),
     );
 
     return $form;
@@ -37,7 +44,7 @@ trait FilterSettingsTrait {
    * @return array
    *   The list of words as an array, separators removed.
    */
-  protected function splitNonCountingWords(string $value): array {
+  protected function splitWordList(string $value): array {
     $value = preg_split('/[\s,]/', $value);
 
     return array_values(array_filter($value));

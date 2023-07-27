@@ -20,16 +20,16 @@ final class FilterRuntsTest extends TestCase {
     $tests = [];
     $tests[] = [
       [
-        'setMinWordsPerLine' => 2,
-        'setMinWordsRequiredToFilter' => 4,
+        'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 4,
       ],
       "Lorem ipsum dolar",
       "Lorem ipsum dolar",
     ];
     $tests[] = [
       [
-        'setMinWordsPerLine' => 2,
-        'setMinWordsRequiredToFilter' => 4,
+        'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 4,
       ],
       "Lorem ipsum dolar sit",
       "Lorem ipsum dolar&nbsp;sit",
@@ -37,7 +37,7 @@ final class FilterRuntsTest extends TestCase {
 
     $tests[] = [
       [
-        'setMinWordsPerLine' => 3,
+        'setMinWordsLastLine' => 3,
       ],
       "Lorem ipsum dolar sit amet\n\nMy country \'tis of thee",
       "Lorem ipsum dolar&nbsp;sit&nbsp;amet\n\nMy country \'tis&nbsp;of&nbsp;thee",
@@ -45,42 +45,42 @@ final class FilterRuntsTest extends TestCase {
 
     $tests[] = [
       [
-        'setMinWordsPerLine' => 3,
+        'setMinWordsLastLine' => 3,
       ],
       '<p>Lorem ipsum dolar sit amet</p><p>My country \'tis of thee</p>',
       '<p>Lorem ipsum dolar&nbsp;sit&nbsp;amet</p><p>My country \'tis&nbsp;of&nbsp;thee</p>',
     ];
     $tests[] = [
       [
-        'setMinWordsPerLine' => 3,
-        'setNonCountingWords' => ['an', 'of'],
+        'setMinWordsLastLine' => 3,
+        'setIgnoredWords' => ['an', 'of'],
       ],
       'A series of essays that weave an ethic of education with an exploration of story',
       'A series of essays that weave an ethic of education with&nbsp;an&nbsp;exploration&nbsp;of&nbsp;story',
     ];
     $tests[] = [
       [
-        'setMinWordsPerLine' => 3,
-        'setNonCountingWords' => ['amet', 'sit'],
+        'setMinWordsLastLine' => 3,
+        'setIgnoredWords' => ['amet', 'sit'],
       ],
       'Lorem ipsum dolar sit amet',
       'Lorem&nbsp;ipsum&nbsp;dolar&nbsp;sit&nbsp;amet',
     ];
     $tests[] = [
       [
-        'setMinWordsPerLine' => 3,
-        'setNonCountingWords' => [],
+        'setMinWordsLastLine' => 3,
+        'setIgnoredWords' => [],
       ],
       'Lorem ipsum dolar sit amet',
       'Lorem ipsum dolar&nbsp;sit&nbsp;amet',
     ];
     $tests[] = [
-      ['setMinWordsPerLine' => 3],
+      ['setMinWordsLastLine' => 3],
       'A series exploration&nbsp;of&nbsp;story',
       'A series exploration&nbsp;of&nbsp;story',
     ];
     $tests[] = [
-      ['setMinWordsPerLine' => 2],
+      ['setMinWordsLastLine' => 2],
       'Lorem ipsum    ',
       'Lorem&nbsp;ipsum',
     ];
@@ -90,12 +90,12 @@ final class FilterRuntsTest extends TestCase {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     ];
     $tests[] = [
-      ['setMinWordsPerLine' => 3],
+      ['setMinWordsLastLine' => 3],
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore&nbsp;magna&nbsp;aliqua.',
     ];
     $tests[] = [
-      ['setMinWordsPerLine' => 5],
+      ['setMinWordsLastLine' => 5],
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore&nbsp;et&nbsp;dolore&nbsp;magna&nbsp;aliqua.',
     ];
@@ -114,19 +114,19 @@ final class FilterRuntsTest extends TestCase {
     $this->assertSame($expected, $filter($text));
   }
 
-  public function testSetMinWordsRequiredToFilterReturnsSelf() {
+  public function testsetMinWordsPerParagraphPrerequisiteReturnsSelf() {
     $filter = new FilterRunts();
-    $this->assertSame($filter, $filter->setMinWordsRequiredToFilter(3));
+    $this->assertSame($filter, $filter->setMinWordsPerParagraphPrerequisite(3));
   }
 
-  public function testSetMinWordsPerLineReturnsSelf() {
+  public function testSetMinWordsLastLineReturnsSelf() {
     $filter = new FilterRunts();
-    $this->assertSame($filter, $filter->setMinWordsPerLine(5));
+    $this->assertSame($filter, $filter->setMinWordsLastLine(5));
   }
 
-  public function testSetNonCountingWordsReturnsSelf() {
+  public function testSetIgnoredWordsReturnsSelf() {
     $filter = new FilterRunts();
-    $this->assertSame($filter, $filter->setNonCountingWords([
+    $this->assertSame($filter, $filter->setIgnoredWords([
       'of',
       'the',
       'a',

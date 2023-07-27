@@ -33,8 +33,9 @@ class NoRuntsFormatter extends FormatterBase implements FilterSettingsInterface 
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $filter_config = [
-      'min_words_per_line' => $this->getSetting('min_words_per_line'),
-      'non_counting_words' => $this->getNonCountingWords(),
+      'min_words_per_paragraph_prerequisite' => $this->getMinWordsPerParagraphPrerequisite(),
+      'min_words_last_line' => $this->getMinWordsLastLine(),
+      'ignored_words' => $this->getIgnoredWords(),
     ];
 
     $elements = [];
@@ -59,8 +60,9 @@ class NoRuntsFormatter extends FormatterBase implements FilterSettingsInterface 
    */
   public static function defaultSettings() {
     return [
-      'min_words_per_line' => FilterSettingsInterface::MIN_WORDS_PER_LINE,
-      'non_counting_words' => FilterSettingsInterface::NON_COUNTING_WORDS,
+      'min_words_per_paragraph_prerequisite' => FilterSettingsInterface::MIN_WORDS_PER_PARAGRAPH_PREREQUISITE,
+      'min_words_last_line' => FilterSettingsInterface::MIN_WORDS_LAST_LINE,
+      'ignored_words' => FilterSettingsInterface::IGNORED_WORDS,
     ];
   }
 
@@ -69,24 +71,40 @@ class NoRuntsFormatter extends FormatterBase implements FilterSettingsInterface 
    */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
-    $summary[] = $this->t('<strong>Min words:</strong> @value', [
-      '@value' => $this->getMinWordsPerLine(),
+    $summary[] = $this->t('<strong>Min words prereq:</strong> @value', [
+      '@value' => $this->getMinWordsPerParagraphPrerequisite(),
     ]);
-    $summary[] = $this->t('<strong>Non words:</strong> @value', [
-      '@value' => implode(' ', $this->getNonCountingWords()),
+    $summary[] = $this->t('<strong>Min last line:</strong> @value', [
+      '@value' => $this->getMinWordsLastLine(),
+    ]);
+    $summary[] = $this->t('<strong>Ignored:</strong> @value', [
+      '@value' => implode(' ', $this->getIgnoredWords()),
     ]);
 
     return $summary;
   }
 
-  public function getNonCountingWords(): array {
-    $value = $this->getSetting('non_counting_words') ?? FilterSettingsInterface::NON_COUNTING_WORDS;
-
-    return $this->splitNonCountingWords($value);
+  /**
+   * {@inheritdoc}
+   */
+  public function getMinWordsPerParagraphPrerequisite(): int {
+    return (int) $this->getSetting('min_words_per_paragraph_prerequisite');
   }
 
-  public function getMinWordsPerLine(): int {
-    return (int) ($this->getSetting('min_words_per_line') ?? FilterSettingsInterface::MIN_WORDS_PER_LINE);
+  /**
+   * {@inheritdoc}
+   */
+  public function getIgnoredWords(): array {
+    $value = $this->getSetting('ignored_words');
+
+    return $this->splitWordList($value);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMinWordsLastLine(): int {
+    return (int) $this->getSetting('min_words_last_line');
   }
 
 }
