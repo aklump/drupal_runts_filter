@@ -21,6 +21,14 @@ final class FilterRuntsTest extends TestCase {
     $tests[] = [
       [
         'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 8,
+      ],
+      '<p>Introduce what might not be sustainable?</p> ',
+      '<p>Introduce what might not be sustainable?</p> ',
+    ];
+    $tests[] = [
+      [
+        'setMinWordsLastLine' => 2,
         'setMinWordsPerParagraphPrerequisite' => 4,
       ],
       "Lorem ipsum dolar",

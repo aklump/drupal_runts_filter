@@ -15,7 +15,7 @@ class FilterRunts {
   const REGEX_PARAGRAPH_ENDING = '/^(<\/p>|\n\n)/';
 
   /**
-   * @var ARRAY
+   * @var array
    */
   private $config;
 
@@ -168,7 +168,7 @@ class FilterRunts {
    */
   private function removeTrailingSeparators(array $tokens): array {
     $trailing = end($tokens);
-    while (self::SEPARATOR === $trailing['type'] && count($tokens)) {
+    while ($trailing && self::SEPARATOR === $trailing['type'] && count($tokens)) {
       array_pop($tokens);
       $trailing = end($tokens);
     }

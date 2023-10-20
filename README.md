@@ -53,3 +53,4 @@ To run unit tests:
 
 1. `composer install`
 2. `./bin/run_unit_tests.sh`
+2. `./bin/run_all_unit_tests.sh` (multiple PHP versions)
