@@ -20,11 +20,65 @@ final class FilterRuntsTest extends TestCase {
     $tests = [];
     $tests[] = [
       [
+        'setMinWordsLastLine' => 3,
+        'setIgnoredWords' => ['an', 'of'],
+      ],
+      'A series of essays that weave an ethic of education with an exploration of story',
+      'A series of essays that weave an ethic of education with&nbsp;an&nbsp;exploration&nbsp;of&nbsp;story',
+    ];
+    $tests[] = [
+      [
+        'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 8,
+        'setIgnoredWords' => array (
+          0 => 'a',
+          1 => 'an',
+          2 => 'and',
+          3 => 'at',
+          4 => 'by',
+          5 => 'for',
+          6 => 'of',
+          7 => 'the',
+          8 => 'to',
+        ),
+      ],
+      '<p>This Privacy Notice is great, you may contact us <a href="#how-to-contact-us">here.</a></p>',
+      '<p>This Privacy Notice is great, you may contact us&nbsp;<a href="#how-to-contact-us">here.</a></p>',
+    ];
+    $tests[] = [
+      [
+        'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 8,
+        'setIgnoredWords' => array (
+          0 => 'a',
+          1 => 'an',
+          2 => 'and',
+          3 => 'at',
+          4 => 'by',
+          5 => 'for',
+          6 => 'of',
+          7 => 'the',
+          8 => 'to',
+        ),
+      ],
+      '<P>This Privacy Notice is great, you may contact us <A HREF="#how-to-contact-us">here.</A></P>',
+      '<P>This Privacy Notice is great, you may contact us&nbsp;<A HREF="#how-to-contact-us">here.</A></P>',
+    ];
+    $tests[] = [
+      [
         'setMinWordsLastLine' => 2,
         'setMinWordsPerParagraphPrerequisite' => 8,
       ],
       '<p>Introduce what might not be sustainable?</p> ',
       '<p>Introduce what might not be sustainable?</p> ',
+    ];
+    $tests[] = [
+      [
+        'setMinWordsLastLine' => 2,
+        'setMinWordsPerParagraphPrerequisite' => 8,
+      ],
+      '<P>Introduce what might not be sustainable?</P> ',
+      '<P>Introduce what might not be sustainable?</P> ',
     ];
     $tests[] = [
       [
@@ -57,14 +111,6 @@ final class FilterRuntsTest extends TestCase {
       ],
       '<p>Lorem ipsum dolar sit amet</p><p>My country \'tis of thee</p>',
       '<p>Lorem ipsum dolar&nbsp;sit&nbsp;amet</p><p>My country \'tis&nbsp;of&nbsp;thee</p>',
-    ];
-    $tests[] = [
-      [
-        'setMinWordsLastLine' => 3,
-        'setIgnoredWords' => ['an', 'of'],
-      ],
-      'A series of essays that weave an ethic of education with an exploration of story',
-      'A series of essays that weave an ethic of education with&nbsp;an&nbsp;exploration&nbsp;of&nbsp;story',
     ];
     $tests[] = [
       [

@@ -12,7 +12,9 @@ class FilterRunts {
 
   const REGEX_WORD_SEP = '/^( |\t|&nbsp;)+/';
 
-  const REGEX_PARAGRAPH_ENDING = '/^(<\/p>|\n\n)/';
+  const REGEX_PARAGRAPH_ENDING = '/^(<\/p>|\n\n)/i';
+
+  const REGEX_HTML_TAGS = '/(<[^>]*[^\/]>)/i';
 
   /**
    * @var array
@@ -82,7 +84,7 @@ class FilterRunts {
   }
 
   private function processSingleParagraph(string $text): string {
-    $tokens = $this->tokenize($text);
+    $tokens = $this->tokenizeString($text);
     $tokens = $this->removeTrailingSeparators($tokens);
     $word_count = count(array_filter($tokens, function (array $token) {
       return self::WORD === $token['type'];
@@ -112,18 +114,48 @@ class FilterRunts {
       return $token['value'];
     }, $tokens));
   }
-
+  
   /**
-   * Split the text into tokens of words and splits.
+   * Given an array of tokens, remove all sep tokens from the end backward.
    *
-   * @param string $text
+   * @param array $tokens
    *
-   * @return array[]
-   *   Each element is the:
-   *   - 0 Token value.
-   *   - 1 Token type.
+   * @return array
+   *   The original array without trailing separators.
+   *
+   * @see self::SEPARATOR
    */
-  private function tokenize(string $text): array {
+  private function removeTrailingSeparators(array $tokens): array {
+    $trailing = end($tokens);
+    while ($trailing && self::SEPARATOR === $trailing['type'] && count($tokens)) {
+      array_pop($tokens);
+      $trailing = end($tokens);
+    }
+
+    return $tokens;
+  }
+
+  public function tokenizeString(string $string): array {
+    // First break the string into HTML tags and plaintext.
+    $els = preg_split(self::REGEX_HTML_TAGS, $string, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+
+    $tokens = [];
+    foreach ($els as $el) {
+      if (preg_match('#^<.+>$#', $el)) {
+        $tokens[] = [
+          'value' => $el,
+          'type' => self::NON_COUNTING_WORD,
+        ];
+        continue;
+      }
+      $new = $this->splitPlaintextIntoWords($el);
+      $tokens = array_merge($tokens, $new);
+    }
+
+    return $tokens;
+  }
+
+  private function splitPlaintextIntoWords(string $text): array {
     $tokens = [];
     $pos = 0;
     $word_start = NULL;
@@ -150,27 +182,6 @@ class FilterRunts {
     if ($final_word) {
       $type = $this->isNonCountingWord($final_word) ? self::NON_COUNTING_WORD : self::WORD;
       $tokens[] = $this->token($type, $final_word, $word_start);
-    }
-
-    return $tokens;
-  }
-
-
-  /**
-   * Given an array of tokens, remove all sep tokens from the end backward.
-   *
-   * @param array $tokens
-   *
-   * @return array
-   *   The original array without trailing separators.
-   *
-   * @see self::SEPARATOR
-   */
-  private function removeTrailingSeparators(array $tokens): array {
-    $trailing = end($tokens);
-    while ($trailing && self::SEPARATOR === $trailing['type'] && count($tokens)) {
-      array_pop($tokens);
-      $trailing = end($tokens);
     }
 
     return $tokens;
